@@ -1,0 +1,30 @@
+node {
+
+	stage('Clone Code') {
+			checkout scm
+			 
+    	   	git branch: 'dev', url: 'https://github.com/dvpsmesut/python.git' 
+    	   	sh "git rev-parse --short HEAD > ${env.WORKSPACE}/.git/commit-id"
+    	   	imageTag = readFile("${env.WORKSPACE}/.git/commit-id").trim()	
+
+    }
+
+    stage('Build and Push Docker Image') {
+
+        def dockerfile = 'Dockerfile'
+        def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
+
+        docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
+          customImage.push("${imageTag}")
+
+        }
+    }
+
+    stage('Deploy on k8s') {
+
+        sh "kubectl apply -f ${env.WORKSPACE}/k8s/app-deployment.yaml"
+
+    }
+
+}
+
