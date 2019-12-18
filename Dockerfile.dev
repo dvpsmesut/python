@@ -1,0 +1,15 @@
+FROM alpine:3.7
+
+# Create app directory
+WORKDIR /app
+
+RUN apk update && apk add python2 py2-gunicorn py2-flask python2-dev py2-pip py-mysqldb \
+    && pip install MySQL-python
+
+# Bundle app source
+COPY app.py gunicorn_config.py /app/
+
+RUN addgroup -g 88 -S gunicorn && adduser -S -D -H -u 88 gunicorn
+
+EXPOSE 8000
+CMD ["gunicorn", "--config", "./gunicorn_config.py", "app:application"]

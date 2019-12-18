@@ -18,7 +18,7 @@
 #       range.
 #
 
-bind = '127.0.0.1:8000'
+bind = '0.0.0.0:8000'
 backlog = 2048
 
 #
@@ -126,8 +126,8 @@ daemon = False
 
 pidfile = None
 umask = 0
-user = gunicorn
-group = gunicorn
+user = None
+group = None
 tmp_upload_dir = None
 
 #

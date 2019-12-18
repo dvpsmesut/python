@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
 
     config.vm.provider "virtualbox" do |v|
-        v.memory = 2048
+        v.memory = 1024
         v.cpus = 2
     end
       
@@ -15,9 +15,6 @@ Vagrant.configure("2") do |config|
         master.vm.hostname = "k8s-master"
         master.vm.provision "ansible" do |ansible|
             ansible.playbook = "kubernetes-setup/master-playbook.yml"
-            ansible.extra_vars = {
-                node_ip: "192.168.50.10",
-            }
         end
     end
 
@@ -25,12 +22,10 @@ Vagrant.configure("2") do |config|
         config.vm.define "node-#{i}" do |node|
             node.vm.box = IMAGE_NAME
             node.vm.network "private_network", ip: "192.168.50.#{i + 10}"
+            #config.vm.network "forwarded_port", guest: 30372, host: 5000
             node.vm.hostname = "node-#{i}"
             node.vm.provision "ansible" do |ansible|
                 ansible.playbook = "kubernetes-setup/node-playbook.yml"
-                ansible.extra_vars = {
-                    node_ip: "192.168.50.#{i + 10}",
-                }
             end
         end
     end
