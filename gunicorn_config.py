@@ -126,8 +126,8 @@ daemon = False
 
 pidfile = None
 umask = 0
-user = None
-group = None
+user = 88
+group = 88
 tmp_upload_dir = None
 
 #

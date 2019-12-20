@@ -78,7 +78,7 @@
         - kubectl=1.14.0-00
 
   - name: Get IP eth1 addr
-    shell: ifconfig eth1 | grep 'inet' | cut -d{{':'}} -f2 | awk '{ print $2 }'
+    shell: ifconfig |egrep -A1 enp0s8 | grep 'inet' | sed -n '1p'|awk '{print  $2}'|cut -c6-22
     register: output
 
   - name: Configure kubelet
@@ -95,6 +95,12 @@
 
   - name: Join the node to cluster
     command: sh /tmp/join-command.sh
+
+  - name: Install NFS client and create mount point dir
+    command: "{{ item }}"
+    with_items:
+      - apt-get install nfs-common
+      - mkdir /mnt/data
 
   handlers:
   - name: docker status

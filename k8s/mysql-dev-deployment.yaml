@@ -13,25 +13,15 @@ spec:
       labels:
         app: db-dev
     spec:
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - nginx
-            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: mysql-dev-db
-        image: mysql/mysql-server
+        image: mysql:5.6
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-pass
-              key: password
+              name: mysql-dev-db-root-password
+              key: db_root_password
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -39,9 +29,14 @@ spec:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: mysql-db-storage
           mountPath: /var/lib/mysql
+        - name: mysql-initdb
+          mountPath: /docker-entrypoint-initdb.d
       volumes:
-      - name: mysql-persistent-storage
+      - name: mysql-db-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: mysql-db-pvc001
+      - name: mysql-initdb
+        configMap:
+          name: mysql-initdb-config

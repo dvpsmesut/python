@@ -1,0 +1,54 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-dev-db
+spec:
+  selector:
+    matchLabels:
+      app: db-dev
+  replicas: 1
+  template: 
+    metadata:
+      labels:
+        app: db-dev
+    spec:
+      containers:
+      - name: mysql-dev-db
+        image: mysql:5.6
+        env:
+        - name: MYSQL_PORT_3306_TCP_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: mysql-dev-db-python-app
+              key: db_host
+        - name: MYSQL_PORT_3306_TCP_PORT
+          value: 3306
+        - name: MYSQL_INSTANCE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-dev-db-python-app
+              key: db_name
+        - name: MYSQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-dev-db-python-app
+              key: db_username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-dev-db-python-app
+              key: db_password
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-db-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-db-storage
+        persistentVolumeClaim:
+          claimName: mysql-db-pvc001

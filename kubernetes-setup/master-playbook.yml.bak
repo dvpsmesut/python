@@ -92,7 +92,7 @@
     with_items:
      - mkdir -p /home/vagrant/.kube
      - cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-     - chown vagrant:vagrant -R /home/vagrant/.kube
+     - chown vagrant:vagrant /home/vagrant/.kube/config
 
   - name: Disable IP tables
     shell: |
@@ -100,23 +100,26 @@
       echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
       sysctl -p
 
-  
-  - name: Install wavenet pod network
+  #- name: Install calico pod network
+  #  become: false
+  #  command: kubectl create -f https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+  - name: Install calico pod network
     become: false
     shell: |
-      kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+      wget https://docs.projectcalico.org/v3.5/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml -O calico.yaml
+      sed -i "s/192.168.0.0/'"172.16.0.0/16"'/g" calico.yaml
+      kubectl apply -f calico.yaml
 
   - name: Generate join command
     command: kubeadm token create --print-join-command
     register: join_command
 
+### Belows are for CI/CD
+
   - name: Copy join command to local file
     become: false
     local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
 
-
-### Prepare CI/CD Process
-  
   - name: Install helm
     shell: |
       wget -P /tmp https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz
@@ -128,57 +131,13 @@
     with_items:
       - apt install nfs-kernel-server
       - mkdir -p /export/mysql_db
-      - chown nobody:nogroup /export/mysql_db  
-
-  - name: Give nfs access to nodes 
-    lineinfile:
-      path: /etc/exports
-      line: /export/mysql_db 192.168.50.0/24(rw,sync,no_subtree_check)
-  
-  - name: Export shared volume
-    command: "{{ item }}"
-    with_items:
+      - chown nobody:nogroup /export/mysql_db
+      - rm -rf /etc/exports
+      - echo "/export/mysql_db 192.168.50.0/24(rw,sync,no_subtree_check)" > /etc/exports
       - exportfs -a
       - systemctl restart nfs-kernel-server
-
-  - name: Install pwgen password generator
-    apt:
-      name: pwgen
-      state: present
-
-  - name: Generate mysql root password
-    shell: pwgen -s -N 1 16 | awk '{print $1}'
-    register: mysql_root_password
-
-  - name: Create kubenetes mysql root password secret
-    become: false
-    shell: kubectl create secret generic mysql-dev-db-root-password --from-literal=db_root_password="{{ mysql_root_password.stdout_lines[0] }}"
-    run_once: true
-
-  - name: Generate mysql python_app_dev_user password
-    shell: pwgen -s -N 1 16 | awk '{print $1}'
-    register: mysql_user_password
-
-  - name: Create kubenetes mysql python_app_dev_user password secret
-    become: false
-    shell: kubectl create secret generic mysql-dev-db-user-password --from-literal=db_root_password="{{ mysql_user_password.stdout_lines[0] }}"
-    run_once: true
-
-  - name: Create persisten volume for mysql db
-    shell: |
-      kubectl apply -f /vagrant/k8s/pv001-mysql-db.yaml
-      kubectl apply -f /vagrant/k8s/pvc001-mysql-db.yaml
-
-  - name: Install mysql db, create required user and db for application
-    shell: |
-      kubectl apply -f /vagrant/k8s/mysql-dev-configmap.yaml
-      kubectl apply -f /vagrant/k8s/mysql-dev-deployment.yaml
-      kubectl apply -f /vagrant/k8s/mysql-dev-svc.yaml
-
 
 
   handlers:
   - name: docker status
     service: name=docker state=started
-
-  
