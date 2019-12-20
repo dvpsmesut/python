@@ -135,16 +135,20 @@
       owner: nobody
       group: nogroup
       mode: '0777'
-      recursive: yes
+      recurse: yes
     with_items:
       - { path: '/export/mysql_db' }
-      - { path: 'jenkins_home' }
+      - { path: '/export/jenkins_home' }
+      - { path: '/export/docker_registry' }
 
   - name: Give access to shared files to nodes 
     lineinfile:
       path: /etc/exports
-      line: /export/mysql_db 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)
-      line: /export/jenkins_home 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)
+      line: "{{ item }}"
+    with_items:
+      - { '/export/mysql_db 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)' }
+      - { '/export/jenkins_home 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)' }
+      - { '/export/docker_registry 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)' }
   
   - name: Export shared volumes
     command: "{{ item }}"
