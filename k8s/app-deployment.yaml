@@ -21,7 +21,7 @@ spec:
         image: dvpsmesut/python-app #_imageTag
         env:
         - name: MYSQL_USERNAME
-          value: python_app_dev_user
+          value: app_dev_user
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:

@@ -200,8 +200,8 @@
       data:
         initdb.sql: |
           create database python_app;
-          grant all privileges on python_app.* to 'python_app_dev_user'@'localhost' identified by '{{ mysql_user_password.stdout_lines[0] }}';
-          grant all privileges on python_app.* to 'python_app_dev_user'@'%' identified by '{{ mysql_user_password.stdout_lines[0] }}';
+          grant all privileges on python_app.* to 'app_dev_user'@'localhost' identified by '{{ mysql_user_password.stdout_lines[0] }}';
+          grant all privileges on python_app.* to 'app_dev_user'@'%' identified by '{{ mysql_user_password.stdout_lines[0] }}';
       EOF
       #
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-deployment.yaml"
