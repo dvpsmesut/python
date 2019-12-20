@@ -6,11 +6,11 @@ metadata:
   labels:
     app: python-app-dev
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: http
     port: 8000
-    nodePort: 31514
+    targetPort: 8000
     protocol: TCP
   selector:
     app: python-app-dev

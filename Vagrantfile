@@ -1,5 +1,4 @@
 IMAGE_NAME = "geerlingguy/ubuntu1604"
-N = 1
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
@@ -18,15 +17,23 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    (1..N).each do |i|
-        config.vm.define "node-#{i}" do |node|
-            node.vm.box = IMAGE_NAME
-            node.vm.network "private_network", ip: "192.168.50.#{i + 10}"
-            #config.vm.network "forwarded_port", guest: 30372, host: 5000
-            node.vm.hostname = "node-#{i}"
-            node.vm.provision "ansible" do |ansible|
-                ansible.playbook = "kubernetes-setup/node-playbook.yml"
-            end
+    config.vm.define "node-1" do |node|
+        node.vm.box = IMAGE_NAME
+        node.vm.network "private_network", ip: "192.168.50.11"
+        config.vm.network "forwarded_port", guest: 31514, host: 8000
+        node.vm.hostname = "node-1"
+        node.vm.provision "ansible" do |ansible|
+            ansible.playbook = "kubernetes-setup/node-playbook.yml"
         end
     end
+
+    config.vm.define "node-2" do |node|
+        node.vm.box = IMAGE_NAME
+        node.vm.network "private_network", ip: "192.168.50.12"
+        node.vm.hostname = "node-2"
+        node.vm.provision "ansible" do |ansible|
+            ansible.playbook = "kubernetes-setup/node-playbook.yml"
+        end
+    end
+
 end

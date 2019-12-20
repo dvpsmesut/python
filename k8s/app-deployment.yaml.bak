@@ -16,15 +16,6 @@ spec:
       labels:
         app: python-app-dev
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - node-2
       containers:
       - name: python-app-dev
         image: dvpsmesut/python-app #_imageTag
@@ -52,3 +43,5 @@ spec:
         ports:
         - name: http
           containerPort: 8000
+    
+      
