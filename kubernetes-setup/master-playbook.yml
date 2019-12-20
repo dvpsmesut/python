@@ -184,6 +184,10 @@
     shell: |
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-mysql-db.yaml"
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-mysql-db.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-docker-registry.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-docker-registry.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-jenkins-home.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-jenkins-home.yaml"
 
   - name: Install mysql db, create required user and db for application
     become: false
