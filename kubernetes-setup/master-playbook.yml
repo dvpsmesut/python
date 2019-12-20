@@ -195,7 +195,7 @@
   - name: deploy python app svc
     become: false
     shell:
-      - kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml"
 
   handlers:
   - name: docker status
