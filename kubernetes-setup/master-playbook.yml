@@ -124,19 +124,20 @@
       mv /tmp/linux-amd64/helm /usr/bin
   
   - name: Install NFS Server
-    command: "{{ item }}"
-    with_items:
+    shell: |
       - apt install nfs-kernel-server
       - mkdir -p /export/mysql_db
-      - chown nobody:nogroup /export/mysql_db
-      - chmod 777 /export/mysql_db
+      - mkdir -p /export/jenkins_home
+      - chown nobody:nogroup /export/*
+      - chmod 777 /export/*
 
   - name: Give nfs access to nodes 
     lineinfile:
       path: /etc/exports
       line: /export/mysql_db 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)
+      line: /export/jenkins_home 192.168.50.0/24(rw,sync,no_subtree_check,no_root_squash)
   
-  - name: Export shared volume
+  - name: Export shared volumes
     command: "{{ item }}"
     with_items:
       - exportfs -a
@@ -168,15 +169,33 @@
   - name: Create persisten volume for mysql db
     become: false
     shell: |
-      kubectl apply -f ../k8s/pv001-mysql-db.yaml
-      kubectl apply -f ../k8s/pvc001-mysql-db.yaml
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-mysql-db.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-mysql-db.yaml"
 
   - name: Install mysql db, create required user and db for application
     become: false
     shell: |
-      kubectl apply -f ../k8s/mysql-dev-configmap.yaml
-      kubectl apply -f ../k8s/mysql-dev-deployment.yaml
-      kubectl apply -f ../k8s/mysql-dev-svc.yaml
+      cat <<EOF | kubectl -f -
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: mysql-initdb-config
+      data:
+        initdb.sql: |
+          create database python_app;
+          #create user 'python_app_dev_user'@'localhost' identified by '"{{ mysql_user_password.stdout_lines[0] }}"';
+          #create user 'python_app_dev_user'@'%' identified by '"{{ mysql_user_password.stdout_lines[0] }}"';
+          grant all privileges on python_app.* to 'python_app_dev_user'@'localhost' identified by '"{{ mysql_user_password.stdout_lines[0] }}"';
+          grant all privileges on python_app.* to 'python_app_dev_user'@'%' identified by '"{{ mysql_user_password.stdout_lines[0] }}"';
+      EOF
+      #
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-deployment.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-svc.yaml"
+
+  - name: deploy python app svc
+    become: false
+    shell:
+      - kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml"
 
   handlers:
   - name: docker status
