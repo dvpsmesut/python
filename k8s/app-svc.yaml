@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
-  namespace: dev
+  name: python-app-dev
+  #namespace: dev
   labels:
-    app: app
+    app: python-app-dev
 spec:
   type: ClusterIP
   ports:
   - name: http
-    port: 80
-    targetPort: 8080
+    port: 8000
+    targetPort: 8000
     protocol: TCP
   selector:
-    app: app
+    app: python-app-dev

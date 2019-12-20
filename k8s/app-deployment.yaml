@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
-  namespace: dev
+  name: python-app-dev
+  #namespace: dev
 spec:
   replicas: 1
   strategy:
@@ -10,23 +10,16 @@ spec:
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: app
+      app: python-app-dev
   template:
     metadata:
       labels:
-        app: app
+        app: python-app-dev
     spec:
       containers:
-      - name: app
-        image: dvpsmesut/app:_imageTag
-        imagePullPolicy: Always
+      - name: python-app-dev
+        image: dvpsmesut/python-app #_imageTag
         env:
-        - name: MYSQL_PORT_3306_TCP_ADDR
-          value: mysql-dev-db
-        - name: MYSQL_PORT_3306_TCP_PORT
-          value: 3306
-        - name: MYSQL_INSTANCE_NAME
-          value: python_app
         - name: MYSQL_USERNAME
           value: python_app_dev_user
         - name: MYSQL_PASSWORD
@@ -34,6 +27,12 @@ spec:
             secretKeyRef:
               name: mysql-dev-db-user-password
               key: db_user_password
+        - name: MYSQL_INSTANCE_NAME
+          value: python_app
+        - name: MYSQL_PORT_3306_TCP_ADDR
+          value: mysql-dev-db
+        - name: MYSQL_PORT_3306_TCP_PORT
+          value: "3306"
         resources: 
           limits:
             cpu: 100m
@@ -44,17 +43,5 @@ spec:
         ports:
         - name: http
           containerPort: 8000
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8000
-          initialDelaySeconds: 45
-          timeoutSeconds: 1
-          periodSeconds: 15
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
+    
+      
