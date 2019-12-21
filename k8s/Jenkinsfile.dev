@@ -11,7 +11,7 @@ node {
 
     stage('Build and Push Docker Image') {
 
-        def dockerfile = 'Dockerfile'
+        def dockerfile = 'Dockerfile.dev'
         def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
 
         docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
@@ -22,6 +22,7 @@ node {
 
     stage('Deploy on k8s') {
 
+        sh "sed -i \"s/_imageTag/${imageTag}/g\" ${env.WORKSPACE}/k8s/app-deployment.yaml"
         sh "kubectl apply -f ${env.WORKSPACE}/k8s/app-deployment.yaml"
 
     }
