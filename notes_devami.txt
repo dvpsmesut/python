@@ -5,9 +5,7 @@ $ kubectl get serviceaccount jenkins-robot -o go-template --template='{{range .s
 $ kubectl get secrets jenkins-robot-token-tw85c -o go-template --template '{{index .data "token"}}' | base64 -d
 
 
-========================================================0
 
-used image dvpsmesut/jenkins-jnlp-slave
 
 
 
