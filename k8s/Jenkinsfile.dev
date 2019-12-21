@@ -1,4 +1,4 @@
-node {
+node("jenkins-slave") {
 
 	stage('Clone Code') {
 			checkout scm
