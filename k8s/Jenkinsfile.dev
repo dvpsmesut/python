@@ -22,7 +22,7 @@ node {
 */
     stage('Deploy on k8s') {
 
-        #sh "sed -i \"s/_imageTag/${imageTag}/g\" ${env.WORKSPACE}/k8s/app-deployment.yaml"
+//        sh "sed -i \"s/_imageTag/${imageTag}/g\" ${env.WORKSPACE}/k8s/app-deployment.yaml"
         sh "kubectl apply -f ${env.WORKSPACE}/k8s/app-deployment.yaml"
 
     }
