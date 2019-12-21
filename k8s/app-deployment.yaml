@@ -28,7 +28,7 @@ spec:
                 - ip-10-0-1-161.ca-central-1.compute.internal
       containers:
       - name: python-app-dev
-        image: dvpsmesut/python-app:_imageTag
+        image: dvpsmesut/python-app #:_imageTag
         env:
         - name: MYSQL_USERNAME
           value: app_dev_user
