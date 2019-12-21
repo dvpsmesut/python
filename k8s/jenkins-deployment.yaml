@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: jenkins
+  name: jenkins-master
 spec:
   replicas: 1
   template:
@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: jenkins
-          image: dvpsmesut/jenkins-master
+          image: dvpsmesut/jenkins-master-k8s
           env:
             - name: JAVA_OPTS
               value: -Djenkins.install.runSetupWizard=false
