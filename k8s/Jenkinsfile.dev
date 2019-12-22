@@ -11,11 +11,13 @@ node("jenkins-slave") {
 
     stage('Build and Push Docker Image') {
 
-        def dockerfile = 'Dockerfile.dev'
-        def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
+        //def dockerfile = 'Dockerfile.dev'
+        //def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
 
         withDockerRegistry(credentialsId: 'hub-docker-com') {
-          customImage.push("${imageTag}")
+          //customImage.push("${imageTag}")
+          sh "docker build -t dvpsmesut/python-app:${imageTag} -f ./k8s/Dockerfile.dev"
+          sh "docker push dvpsmesut/python-app:${imageTag}"
         }
     }
 
