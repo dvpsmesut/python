@@ -4,7 +4,7 @@ node("jenkins-slave") {
 			
             checkout scm 
     	   		
-            //sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1 > ${env.WORKSPACE}/tag.txt"
+            sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1 > ${env.WORKSPACE}/tag.txt"
             //imageTag = readFile("${env.WORKSPACE}/tag.txt").trim()  
             
     }
