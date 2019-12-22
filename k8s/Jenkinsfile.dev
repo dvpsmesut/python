@@ -16,7 +16,7 @@ node("jenkins-slave") {
 
         //docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
         //  customImage.push("${imageTag}")
-        sh "docker build -t ${env.JOB_BASE_NAME} -f ./k8s/Dockerfile.dev ."
+        sh "docker build -t docker-registry.default.svc.cluster.local/${env.JOB_BASE_NAME} -f ./k8s/Dockerfile.dev ."
         sh "docker push docker-registry.default.svc.cluster.local/${env.JOB_BASE_NAME}"
         //}
     }
