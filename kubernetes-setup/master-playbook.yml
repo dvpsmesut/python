@@ -176,12 +176,12 @@
   - name: Create persisten volume for mysql db
     become: false
     shell: |
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-mysql-db.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-mysql-db.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-docker-registry.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-docker-registry.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-jenkins-home.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-jenkins-home.yaml"
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-mysql-db.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-mysql-db.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-docker-registry.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-docker-registry.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pv001-jenkins-home.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/pvc001-jenkins-home.yaml
 
   - name: Install mysql db, create required user and db for application
     become: false
@@ -198,25 +198,25 @@
           grant all privileges on python_app.* to 'app_dev_user'@'%' identified by '{{ mysql_user_password.stdout_lines[0] }}';
       EOF
       #
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-deployment.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-svc.yaml"
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-deployment.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-svc.yaml
 
   - name: Deploy python app svc
     become: false
     shell:
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml"
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml
 
   - name: Install docker registry
     become: false
     shell:
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-deployment.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-svc.yaml"
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-deployment.yaml
+      #kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-svc.yaml"
 
   - name: Install Jenkins
     become: false
     shell:
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml"
-      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml"
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml
+      #kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml"
 
 
 
