@@ -1,12 +1,13 @@
 node("jenkins-slave") {
 
 	stage('Clone Code') {
-			checkout scm
-			 
-    	   	git branch: 'dev', url: 'https://github.com/dvpsmesut/python.git' 
+			
+            checkout scm 
+    	   	//git branch: 'dev', url: 'https://github.com/dvpsmesut/python.git' 
     	   	//sh "git rev-parse --short HEAD > ${env.WORKSPACE}/.git/commit-id"
     	   	//imageTag = readFile("${env.WORKSPACE}/.git/commit-id").trim()	
-            sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1 > ${env.WORKSPACE}/tag.txt"
+            //sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1 > ${env.WORKSPACE}/tag.txt"
+            sh "echo 232323 > ${env.WORKSPACE}/tag.txt"
             imageTag = readFile("${env.WORKSPACE}/tag.txt").trim()  
             
     }
