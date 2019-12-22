@@ -1,3 +1,4 @@
 .vagrant/
 kubernetes-setup/join-command
 notes.txt
+Vagrantfile.bak
