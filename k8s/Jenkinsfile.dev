@@ -14,7 +14,7 @@ node("jenkins-slave") {
         def dockerfile = 'Dockerfile.dev'
         def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
 
-        docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
+        docker.withRegistry([ credentialsId: "hub-docker-com", url: "" ]) {
           customImage.push("${imageTag}")
         }
     }
