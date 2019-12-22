@@ -27,7 +27,7 @@ spec:
                 - node-2
       containers:
       - name: python-app-dev
-        image: docker-registry/python-app #:_imageTag
+        image: docker-registry.default.svc.cluster.local/python-app #:_imageTag
         env:
         - name: MYSQL_USERNAME
           value: app_dev_user
