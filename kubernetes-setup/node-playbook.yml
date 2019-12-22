@@ -45,7 +45,7 @@
   - name: add insecure docker registry
     shell: |
       echo "{" > /etc/docker/daemon.json
-      echo "      \"insecure-registries\": [\"docker-registry\"]" >> /etc/docker/daemon.json
+      echo "      \"insecure-registries\": [\"docker-registry.default.svc.cluster.local:80\"]" >> /etc/docker/daemon.json
       echo "}" >> /etc/docker/daemon.json
 
   - name: Remove swapfile from /etc/fstab
