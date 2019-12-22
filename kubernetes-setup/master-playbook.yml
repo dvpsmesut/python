@@ -117,12 +117,6 @@
 
 ### Prepare CI/CD Process
   
-  - name: Install helm
-    shell: |
-      wget -P /tmp https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz
-      tar xzvf /tmp/helm-v3.0.2-linux-amd64.tar.gz -C /tmp
-      mv /tmp/linux-amd64/helm /usr/bin
-  
   - name: Install NFS Server
     apt:
       name: nfs-kernel-server
@@ -207,10 +201,24 @@
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-deployment.yaml"
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/mysql-dev-svc.yaml"
 
-  - name: deploy python app svc
+  - name: Deploy python app svc
     become: false
     shell:
       kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml"
+
+  - name: Install docker registry
+    become: false
+    shell:
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-deployment.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-svc.yaml"
+
+  - name: Install Jenkins
+    become: false
+    shell:
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml"
+      kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml"
+
+
 
   handlers:
   - name: docker status
