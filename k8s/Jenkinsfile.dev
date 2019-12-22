@@ -11,18 +11,19 @@ node("jenkins-slave") {
 
     stage('Build and Push Docker Image') {
 
-        def dockerfile = 'Dockerfile.dev'
-        def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
+        //def dockerfile = 'Dockerfile.dev'
+        //def customImage = docker.build("${env.JOB_BASE_NAME}", "-f ./k8s/${dockerfile} .")
 
-        docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
-          customImage.push("${imageTag}")
-
-        }
+        //docker.withRegistry('https://hub.docker.com', 'hub-docker-com') {
+        //  customImage.push("${imageTag}")
+        sh "docker build -t ${env.JOB_BASE_NAME} -f ./k8s/Dockerfile.dev"
+        sh "docker push docker-registry/${env.JOB_BASE_NAME}"
+        //}
     }
 
     stage('Deploy on k8s') {
 
-        sh "sed -i \"s/_imageTag/${imageTag}/g\" ${env.WORKSPACE}/k8s/app-deployment.yaml"
+        //sh "sed -i \"s/_imageTag/${imageTag}/g\" ${env.WORKSPACE}/k8s/app-deployment.yaml"
         sh "kubectl apply -f ${env.WORKSPACE}/k8s/app-deployment.yaml"
 
     }

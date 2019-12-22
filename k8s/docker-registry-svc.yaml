@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: docker-registry
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: http
-      port: 5000
-      nodePort: 32500      
+      port: 80
+      targetPort: 5000      
   selector:
     name: docker-registry
