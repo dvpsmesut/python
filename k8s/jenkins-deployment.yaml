@@ -5,13 +5,14 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: jenkins
+      app: jenkins-master
   replicas: 1
   template:
     metadata:
       labels:
-        app: jenkins
+        app: jenkins-master
     spec:
+      serviceAccountName: jenkins
       containers:
         - name: jenkins
           image: dvpsmesut/jenkins-master-k8s
