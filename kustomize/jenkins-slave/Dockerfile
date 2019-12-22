@@ -11,6 +11,7 @@ ADD https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/
 RUN chmod +x /usr/local/bin/kubectl
 RUN chmod +x /usr/local/bin/jenkins-agent &&\
     ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+COPY daemon.json /etc/docker/daemon.json
 USER ${user}
 RUN mkdir /home/jenkins/.kube
 ENTRYPOINT ["jenkins-slave"]
