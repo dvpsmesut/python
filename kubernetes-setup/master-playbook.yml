@@ -210,13 +210,27 @@
     become: false
     shell:
       kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-deployment.yaml
-      #kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-svc.yaml"
+      #kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/docker-registry-svc.yaml
 
-  - name: Install Jenkins
+  - name: Install Jenkins ans configmap for slaves
     become: false
     shell:
       kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml
-      #kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml"
+      #kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml
+      #kubectl apply -f "https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-slave-kubeconfig-configmap.yaml
+
+  - name: Create service account for Jenkins to access k8s
+    become: false
+    shell:
+      kubectl create serviceaccount jenkins
+      kubectl create rolebinding jenkins-binding --clusterrole=cluster-admin --serviceaccount=default:jenkins
+
+  - name: Get Jenkins auth secret for k8s
+    become: false
+    shell:
+      kubectl get secrets $(kubectl get serviceaccount jenkins -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}') \ 
+      -o go-template --template '{{index .data "token"}}' | base64 -d
+    register: jenkins_k8s_secret
 
 
 

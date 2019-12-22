@@ -16,8 +16,8 @@ spec:
         - name: jenkins
           image: dvpsmesut/jenkins-master-k8s
           env:
-            - name: JAVA_OPTS
-              value: -Djenkins.install.runSetupWizard=false
+            #- name: JAVA_OPTS
+            #  value: -Djenkins.install.runSetupWizard=false
           ports:
             - name: http-port
               containerPort: 8080

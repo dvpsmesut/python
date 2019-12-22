@@ -9,4 +9,4 @@ spec:
     - ReadWriteMany
   nfs:
     server: 192.168.50.10
-    path: "/export/mysql_db"
+    path: "/export/jenkins_home"
