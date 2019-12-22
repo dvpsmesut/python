@@ -6,7 +6,7 @@ node("jenkins-slave") {
     	   	git branch: 'dev', url: 'https://github.com/dvpsmesut/python.git' 
     	   	//sh "git rev-parse --short HEAD > ${env.WORKSPACE}/.git/commit-id"
     	   	//imageTag = readFile("${env.WORKSPACE}/.git/commit-id").trim()	
-            sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 12 | head -n 1 > ${env.WORKSPACE}/tag.txt"
+            sh "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1 > ${env.WORKSPACE}/tag.txt"
             imageTag = readFile("${env.WORKSPACE}/tag.txt").trim()  
             
     }
