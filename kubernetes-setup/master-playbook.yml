@@ -206,23 +206,18 @@
     shell:
       kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/app-svc.yaml
 
-  - name: Install Jenkins ans configmap for slaves
-    become: false
-    shell:
-      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml
-      #kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml
-
+  
   - name: Create service account for Jenkins to access k8s
     become: false
     shell:
       #kubectl create serviceaccount jenkins
       #kubectl create rolebinding jenkins-binding --clusterrole=cluster-admin --serviceaccount=default:jenkins
-      kubectl -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-service-account.yaml
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-service-account.yaml
 
   - name: Get Jenkins auth secret for k8s
     become: false
     shell:
-      kubectl get secrets $(kubectl get serviceaccount jenkins -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}') -o go-template --template '{{index .data "token"}}' | base64 -d
+      kubectl get secrets $(kubectl get serviceaccount jenkins -o go-template --template="'{{range .secrets}}{{.name}}{{"\n"}}{{end}}') -o go-template --template '{{index .data "token"}}'" | base64 -d 
     register: jenkins_k8s_token
 
   - name: Copy jenkins k8s token to localfile
@@ -232,6 +227,13 @@
   - name: Use same kubeconfig for jenkins
     shell:
       kubectl create secret generic jenkins-kubeconfig --from-file=/home/vagrant/.kube/config
+ 
+  - name: Install Jenkins ans configmap for slaves
+    become: false
+    shell:
+      kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-deployment.yaml
+      #kubectl apply -f https://raw.githubusercontent.com/dvpsmesut/python/dev/k8s/jenkins-svc.yaml
+
 
   handlers:
   - name: docker status
