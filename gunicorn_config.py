@@ -1,7 +1,7 @@
 # Sample Gunicorn configuration file.
 
 #
-# Server socket
+# Server socket....
 #
 #   bind - The socket to bind.
 #
